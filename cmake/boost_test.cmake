@@ -21,12 +21,51 @@ function(boost_test)
 
     set(__NAME ${__PREFIX}-${__NAME})
 
-    add_executable(${__NAME} EXCLUDE_FROM_ALL ${__SOURCES})
-    target_link_libraries(${__NAME} ${__LIBRARIES})
+    if(__TYPE STREQUAL "compile" OR __TYPE STREQUAL "compile-fail")
 
-    add_test(NAME compile-${__NAME} COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target ${__NAME})
+        add_library(${__NAME} EXCLUDE_FROM_ALL ${__SOURCES})
+        target_link_libraries(${__NAME} ${__LIBRARIES})
 
-    add_test(NAME run-${__NAME} COMMAND ${__NAME})
-    set_tests_properties(run-${__NAME} PROPERTIES DEPENDS compile-${__NAME})
+        add_test(NAME compile-${__NAME} COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target ${__NAME})
+
+        if(__TYPE STREQUAL "compile-fail")
+            set_tests_properties(compile-${__NAME} PROPERTIES WILL_FAIL TRUE)
+        endif()
+
+    elseif(__TYPE STREQUAL "link")
+
+        add_executable(${__NAME} EXCLUDE_FROM_ALL ${__SOURCES})
+        target_link_libraries(${__NAME} ${__LIBRARIES})
+
+        add_test(NAME link-${__NAME} COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target ${__NAME})
+
+    elseif(__TYPE STREQUAL "link-fail")
+
+        add_library(compile-${__NAME} EXCLUDE_FROM_ALL ${__SOURCES})
+        target_link_libraries(compile-${__NAME} ${__LIBRARIES})
+
+        add_test(NAME compile-${__NAME} COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target compile-${__NAME})
+
+        add_executable(${__NAME} EXCLUDE_FROM_ALL ${__SOURCES})
+        target_link_libraries(${__NAME} ${__LIBRARIES})
+
+        add_test(NAME link-${__NAME} COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target ${__NAME})
+        set_tests_properties(link-${__NAME} PROPERTIES WILL_FAIL TRUE)
+
+    elseif(__TYPE STREQUAL "run" OR __TYPE STREQUAL "run-fail")
+
+        add_executable(${__NAME} EXCLUDE_FROM_ALL ${__SOURCES})
+        target_link_libraries(${__NAME} ${__LIBRARIES})
+
+        add_test(NAME compile-${__NAME} COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target ${__NAME})
+
+        add_test(NAME run-${__NAME} COMMAND ${__NAME})
+        set_tests_properties(run-${__NAME} PROPERTIES DEPENDS compile-${__NAME})
+
+        if(__TYPE STREQUAL "run-fail")
+            set_tests_properties(run-${__NAME} PROPERTIES WILL_FAIL TRUE)
+        endif()
+
+    endif()
 
 endfunction(boost_test)
