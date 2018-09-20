@@ -69,3 +69,39 @@ function(boost_test)
     endif()
 
 endfunction(boost_test)
+
+function(boost_test_jamfile)
+
+    cmake_parse_arguments(_ "" "FILE;PREFIX" "LIBRARIES" ${ARGN})
+
+    file(STRINGS ${__FILE} data)
+
+    set(types compile compile-fail link link-fail run run-fail)
+
+    foreach(line IN LISTS data)
+        if(line)
+
+            string(REGEX MATCHALL "[^ ]+" ll ${line})
+
+            list(GET ll 0 e0)
+
+            if(e0 IN_LIST types)
+
+                list(LENGTH ll lln)
+
+                if(lln GREATER 2)
+
+                    message("Jamfile line ignored: ${line}")
+
+                else()
+
+                    list(GET ll 1 e1)
+                    boost_test(PREFIX ${__PREFIX} TYPE ${e0} SOURCES ${e1} LIBRARIES ${__LIBRARIES})
+
+                endif()
+            endif()
+
+        endif()
+    endforeach(line)
+
+endfunction(boost_test_jamfile)
