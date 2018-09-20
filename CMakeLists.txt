@@ -8,7 +8,7 @@ project(BoostMinCMake LANGUAGES CXX)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 
-	include(cmake/boost_test.cmake)
+    include(cmake/boost_test.cmake)
 
     enable_testing()
 
