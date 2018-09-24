@@ -12,20 +12,6 @@ branches:
     - develop
     - /feature\/.*/
 
-env:
-  matrix:
-    - BOGUS_JOB=true
-
-matrix:
-
-  exclude:
-    - env: BOGUS_JOB=true
-
-  include:
-    - os: linux
-      compiler: g++
-      env: CMAKE=1
-
 script:
   - mkdir __build__
   - cd __build__
