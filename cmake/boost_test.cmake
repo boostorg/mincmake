@@ -4,7 +4,7 @@
 
 function(boost_test)
 
-    cmake_parse_arguments(_ "" "TYPE;PREFIX;NAME" "SOURCES;LIBRARIES" ${ARGN})
+    cmake_parse_arguments(_ "" "TYPE;PREFIX;NAME" "SOURCES;LIBRARIES;ARGUMENTS" ${ARGN})
 
     if(NOT __TYPE)
         set(__TYPE run)
@@ -59,7 +59,7 @@ function(boost_test)
 
         add_test(NAME compile-${__NAME} COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target ${__NAME})
 
-        add_test(NAME run-${__NAME} COMMAND ${__NAME})
+        add_test(NAME run-${__NAME} COMMAND ${__NAME} ${__ARGUMENTS})
         set_tests_properties(run-${__NAME} PROPERTIES DEPENDS compile-${__NAME})
 
         if(__TYPE STREQUAL "run-fail")
