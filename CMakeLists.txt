@@ -8,10 +8,14 @@ project(BoostMinCMake LANGUAGES CXX)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 
+    include(cmake/boost_fetch.cmake)
     include(cmake/boost_test.cmake)
 
-    enable_testing()
+    boost_fetch(boostorg/config TAG develop)
+    boost_fetch(boostorg/assert TAG develop)
+    boost_fetch(boostorg/core TAG develop)
 
+    enable_testing()
     add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C $<CONFIG>)
 
     add_subdirectory(test)

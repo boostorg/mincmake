@@ -2,17 +2,17 @@
 // Distributed under the Boost Software License, Version 1.0.
 // See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt
 
-#include <iostream>
+#include <boost/core/lightweight_test.hpp>
 #include <string.h>
-
-#define TEST(expr) if(!(expr)) { std::cerr << __FILE__ << "(" << __LINE__ << "): test '" #expr "' failed." << std::endl; r = 1; }
 
 int main( int ac, char const* av[] )
 {
-    int r = 0;
+    BOOST_TEST_EQ( ac, 2 );
 
-    TEST( ac == 2 )
-    TEST( ac >= 2 && strcmp( av[1], "pumpkin" ) == 0 )
+    if( ac >= 2 )
+    {
+        BOOST_TEST_CSTR_EQ( av[1], "pumpkin" );
+    }
 
-    return r;
+    return boost::report_errors();
 }

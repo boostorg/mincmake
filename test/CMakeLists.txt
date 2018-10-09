@@ -18,6 +18,6 @@ boost_test(TYPE run-fail SOURCES run_fail.cpp)
 
 boost_test_jamfile(FILE Jamfile PREFIX BoostMinCMake2)
 
-#
+# arguments
 
-boost_test(TYPE run SOURCES arguments.cpp ARGUMENTS pumpkin)
+boost_test(TYPE run SOURCES arguments.cpp ARGUMENTS pumpkin LIBRARIES Boost::core)
