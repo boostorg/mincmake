@@ -56,18 +56,25 @@ function(boost_fetch)
 
     string(MAKE_C_IDENTIFIER ${REPO} NAME)
 
-    message(STATUS "Fetching ${REPO}:${__TAG}")
-
     if(CMAKE_VERSION VERSION_LESS 3.6)
 
-        FetchContent_Populate(${NAME} QUIET GIT_REPOSITORY "https://github.com/${REPO}" GIT_TAG ${__TAG})
+        FetchContent_Declare(${NAME} QUIET GIT_REPOSITORY "https://github.com/${REPO}" GIT_TAG ${__TAG})
 
     else()
 
-        FetchContent_Populate(${NAME} QUIET GIT_REPOSITORY "https://github.com/${REPO}" GIT_TAG ${__TAG} GIT_SHALLOW 1)
+        FetchContent_Declare(${NAME} QUIET GIT_REPOSITORY "https://github.com/${REPO}" GIT_TAG ${__TAG} GIT_SHALLOW 1)
 
     endif()
 
-    add_subdirectory(${${NAME}_SOURCE_DIR} ${${NAME}_BINARY_DIR})
+    FetchContent_GetProperties(${NAME})
+
+    if(NOT ${NAME}_POPULATED)
+
+        message(STATUS "Fetching ${REPO}:${__TAG}")
+
+        FetchContent_Populate(${NAME})
+        add_subdirectory(${${NAME}_SOURCE_DIR} ${${NAME}_BINARY_DIR})
+
+    endif()
 
 endfunction(boost_fetch)
