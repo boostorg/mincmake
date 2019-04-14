@@ -14,32 +14,37 @@ branches:
 
 env:
   matrix:
-    - BOGUS_JOB=true
+    - DEFAULT_JOB=true
 
 matrix:
 
   exclude:
-    - env: BOGUS_JOB=true
+    - env: DEFAULT_JOB=true
 
   include:
     - os: linux
       dist: trusty
       compiler: g++
+      env: COMMENT=trusty-g++
 
     - os: linux
       dist: trusty
       compiler: clang++
+      env: COMMENT=trusty-clang++
 
     - os: linux
       dist: xenial
       compiler: g++
+      env: COMMENT=xenial-g++
 
     - os: linux
       dist: xenial
       compiler: clang++
+      env: COMMENT=xenial-clang++
 
     - os: osx
       compiler: clang++
+      env: COMMENT=macos-clang++
 
 script:
   - mkdir __build__
